@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Can be improved: Suppressing the ability of users to resize a document causes accessibility and usability issues.
+  Consider using another viewport values: https://drafts.csswg.org/css-device-adapt/#viewport-desc -->
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="author" content="">
+  <meta name="description" content="Articles saver">
+  <title>Explorer</title>
+  <link rel="stylesheet" href="<%=htmlWebpackPlugin.files.chunks.main.css %>">
+  <link rel="icon" href="<%= require('./images/favicon.png')%>" type="image/png">
+</head>
+
+<body>
+  <!-- Can be improved: Since this div is not an element but a block, make sure to name it according to
+  BEM methodology: https://en.bem.info/methodology/naming-convention/ -->
+<div class="root__section">
+  <header class="header">
+    <div class="menu">
+      <!-- Excellent: Using a link for a logo is the right decision! -->
+      <a href="./" class="menu__logo">Explorer</a>
+      <!-- Can be improved: BEM methodology suggests avoiding id usage as much as possible and
+      on top of that, not using this ID in javascript makes it a bit redundant.
+      TIP: The element name should describe its purpose ("What is this?" — item, text, etc.),
+      so consider changing '__mobile' to something unambiguous. -->
+      <div class="menu__mobile" id="mobile-menu"></div>
+      <!-- Needs correcting: More appropriate structure for a menu in terms of semantics is:
+      'nav > ul > li > a'. This will help screen readers interpret what is there.
+      https://developer.mozilla.org/en-US/docs/Web/HTML/Element/nav -->
+      <div class="menu__items-list">
+        <a href="./" class="menu__link menu__link_selected">Home</a>
+        <div class="menu__items-single-item">
+            <!-- Needs correcting: Keep an eye on whitespaces when moving closing bracket to a new line! -->
+            <span class="menu__link menu__link--logged">User
+              <span class="menu__logout"></span>
+            </span>
+        </div>
+      </div>
+    </div>
+    <div class="header__title-wrapper">
+      <h1 class="header__title">What's going on in the world?</h1>
+      <p class="header__subtitle">
+        <b>Find the latest news on any topic and save them in your personal account.</b>
+      </p>
+      <!-- Needs correcting: Form elements should be wrapped in the <form> tag.
+      You can find more details about the form and its attributes here: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form
+      If you don't want horizontal scrolling to appear, make sure that minimum width of an element
+      doesn't exceed display width: https://developer.mozilla.org/en-US/docs/Web/CSS/min-width -->
+      <div class="header__form">
+        <input class="header__form-input" type="text" name="search" placeholder="Yellowstone" required/>
+        <!-- Needs correcting: When setting the width/height of an element, the element often appears bigger
+        because the element's border and padding are added to the element's specified width/height.
+        Content overflowing problem can be solved with setting the 'box-sizing' property.
+        Read more: https://developer.mozilla.org/ru/docs/Web/CSS/box-sizing -->
+        <span class="button header__button">Search</span>
+      </div>
+    </div>
+  </header>
+  <!-- Can be improved: Although HTML properties without quotation marks are not classed as Invalid HTML,
+  but they will potentially cause problems later on down the line.
+  Info: https://www.w3.org/TR/REC-html40/intro/sgmltut.html#h-3.2.2 -->
+  <section class=preloader>
+    <div class="preloader__message" id="preloader-searching">
+      <!-- Can be improved: According to BEM guidelines, the structure of an element's full name
+      should be `block-name__element-name`.  -->
+      <i class="circle-preloader"></i>
+      <h5 class="preloader__subtitle">Searching for news...</h5>
+    </div>
+    <!-- Needs correcting: `preloader__hide` is not quite correct name for a modifier.
+    The structure of the modifier's full name follows the pattern `block-name__element-name_modifier-name`.
+    Read more: https://en.bem.info/methodology/quick-start/#modifier -->
+    <div class="preloader__message preloader__hide" id="preloader-not-found">
+      <img class="preloader__icon" src="<%= require('./images/not-found.svg')%>" alt="no">
+      <h5 class="preloader__title">Nothing found</h5>
+      <h4 class="preloader__subtitle">Sorry, but nothing matched your search terms.</h4>
+    </div>
+  </section>
+  <main class="results">
+    <h3 class="results__title">Search results</h3>
+    <div class="results__news">
+      <!-- Can be improved: Nothing is wrong with placing a div inside anchor tag,
+      but it affects screen readers and accessibility in general. Also it prevents simple user tasks, like selecting text.
+      Consider refactoring this component using pseudo-elements or javascript.
+      More info on this topic: https://css-tricks.com/block-links-the-search-for-a-perfect-solution/ -->
+      <a href="#" class="card">
+        <div class="card__body">
+          <!-- Needs correcting: Looks like "card_image-wrapper", "card_img", "card_wrapper", "card_date",
+          "card_title", "card_text", "card_src" are composite parts of a "card" block which won't be used
+          separately from it. Don't forget to use `block-name__element-name` pattern for naming.
+          Info: https://en.bem.info/methodology/quick-start/#element -->
+          <div class="card_image-wrapper">
+            <div class="card_img"></div>
+          </div>
+          <!-- Can be better: You can use 'top', 'right', 'bottom', and 'left' properties to position element
+          exactly where it's needed: https://developer.mozilla.org/en-US/docs/Web/CSS/position -->
+          <div class="card__icon"></div>
+          <p class="card__warning">Sign in to save articles</p>
+          <div class="card_wrapper">
+            <!-- Can be better: There is a special <time> tag for dates.
+            This element is for presenting dates and times in a machine readable format.
+            For example, this can help a user agent offer to add an event to a user's calendar.
+            You can learn more about this tag and its usage here: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time
+            -->
+            <p class="card_date">November 4, 2020</p>
+            <h4 class="card_title">Why do we use it?</h4>
+            <div class="card_text">It is a long established fact that a reader will be distracted by the readable content
+              of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal
+              distribution of letters, as opposed to using 'Content here, content here', making it look like readable
+              English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model
+              text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions
+              have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+            </div>
+          </div>
+        </div>
+        <p class="card_src">lipsum.com</p>
+      </a>
+      <a href="#" class="card">
+        <div class="card__body">
+          <div class="card_image-wrapper">
+            <div class="card_img"></div>
+          </div>
+          <div class="card__icon"></div>
+          <p class="card__warning">Sign in to save articles</p>
+          <div class="card_wrapper">
+            <p class="card_date">November 4, 2020</p>
+            <h4 class="card_title">Why do we use it?</h4>
+            <div class="card_text">It is a long established fact that a reader will be distracted by the readable content
+              of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal
+              distribution of letters, as opposed to using 'Content here, content here', making it look like readable
+              English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model
+              text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions
+              have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+            </div>
+          </div>
+        </div>
+        <p class="card_src">lipsum.com</p>
+      </a>
+      <a href="#" class="card">
+        <div class="card__body">
+          <div class="card_image-wrapper">
+            <div class="card_img"></div>
+          </div>
+          <div class="card__icon"></div>
+          <p class="card__warning">Sign in to save articles</p>
+          <div class="card_wrapper">
+            <p class="card_date">November 4, 2020</p>
+            <h4 class="card_title">Why do we use it?</h4>
+            <div class="card_text">It is a long established fact that a reader will be distracted by the readable content
+              of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal
+              distribution of letters, as opposed to using 'Content here, content here', making it look like readable
+              English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model
+              text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions
+              have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+            </div>
+          </div>
+        </div>
+        <p class="card_src">lipsum.com</p>
+      </a>
+      <a href="#" class="card">
+        <div class="card__body">
+          <div class="card_image-wrapper">
+            <div class="card_img"></div>
+          </div>
+          <div class="card__icon card__icon_marked"></div>
+          <p class="card__warning">Sign in to save articles</p>
+          <div class="card_wrapper">
+            <p class="card_date">November 4, 2020</p>
+            <h4 class="card_title">Why do we use it?</h4>
+            <div class="card_text">It is a long established fact that a reader will be distracted by the readable content
+              of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal
+              distribution of letters, as opposed to using 'Content here, content here', making it look like readable
+              English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model
+              text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions
+              have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+            </div>
+          </div>
+        </div>
+        <p class="card_src">lipsum.com</p>
+      </a>
+    </div>
+    <button class="button results__button">Show more</button>
+  </main>
+  <!-- Needs correcting: Since 'about' section is an element of 'results' block, it should be nested inside of it.
+  More info on nesting: https://en.bem.info/methodology/html/#nesting-of-elements
+  Looking ahead, you should probably have 'box-sizing' property set for this element if you don't want
+  for text to overflow. Alternatively, you can play with paddings/margins and width.
+  https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing  -->
+  <section class="about results__about">
+      <h3 class="about__title">About the author</h3>
+      <!-- Could be improved: It would be better using the <p> tag since the <div> is also a block element
+        and has nothing else but text in it so it would be more specific. Use of more appropriate elements
+        instead of the div element leads to better accessibility for readers and easier maintainability for authors.
+        As for validity and performance, it's perfectly fine.
+        Read more: http://www.w3.org/TR/html5/grouping-content.html#the-div-element -->
+      <div class="about__text">
+          Vivamus sed volutpat odio. Praesent placerat gravida erat, in ornare ex. <br/> Nullam vitae tellus euismod, egestas
+          diam vel, maximus orci. Nulla fringilla, enim ut pharetra rhoncus, arcu enim aliquet turpis, ac tempus dolor
+          lacus a velit. Donec semper velit eu volutpat bibendum. <br/> In ultricies dolor quis neque pellentesque pharetra.
+          Donec nibh urna, suscipit in feugiat at, facilisis et turpis. Fusce blandit tincidunt libero, sed ornare sapien
+          tincidunt nec. Curabitur quis fermentum felis.
+      </div>
+      <div class="about__text">
+        Quisque urna magna, molestie id nisl vitae, bibendum auctor sem. <br/> Aliquam efficitur orci elit, lacinia fringilla
+        nibh aliquet non. Morbi consectetur tincidunt dui in rhoncus. Vestibulum imperdiet luctus sodales. Class aptent
+        taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed vitae tincidunt sem.
+      </div>
+  </section>
+  <footer class="footer">
+    <!-- Nice touch: No need to use entity references like &copy;, assuming the same encoding (UTF-8)
+      is used for files and editors as well as among teams. -->
+    <p class="footer__legal">© 2021</p>
+    <ul class="footer__menu">
+      <li class="footer__menu-item"><a href="./">Home</a></li>
+      <li class="footer__menu-item"><a href="./about/">About the project</a></li>
+      <li class="footer__menu-item"><a href="https://praktikum.yandex.ru" target="_blank">Practicum by Yandex</a></li>
+    </ul>
+    <!-- Can be improved: From what I'm seeing in css: .footer__social-icon { margin-left: 20px;}
+    I'm only guessing you intended to align icons horizontally, not vertically. If that's the case,
+    there is no need for <br> tags here. Another approach to this would be using 'ul > li > a' structure,
+    just like you did in 'footer_menu' -->
+    <p class="footer__links">
+      <a href="#" class="footer__social-icon" target="_blank">
+        <img src="<%= require('./images/social/git.svg')%>" alt="Logo">
+      </a> <br>
+      <a href="#" class="footer__social-icon" target="_blank">
+        <img src="<%= require('./images/social/facebook.svg')%>" alt="Logo">
+      </a> <br>
+    </p>
+  </footer>
+</div>
+<div id="modal">
+  <!-- Needs correcting: The BEM methodology does not allow to position block within its element,
+  so consider using mixes or additional block element. e.g. ".auth-form > .auth-form__inner".
+  More info on topic: https://en.bem.info/methodology/html/#using-html-wrappers
+  And moreover, in order to use "_hide" modifier you should mix it with the block itself, as it can't be used separately.
+  e.g. class="block block_modifier"   -->
+  <section class="auth-form__wrapper_hide" id="login-form">
+    <form class="auth-form">
+      <div class="auth-form__close" id="close-login-form"></div>
+      <h4 class="auth-form__title">Sign in</h4>
+      <span class="auth-form__subtitle">E-mail</span>
+      <input class="auth-form__input" type="email" placeholder="Enter email" required>
+      <span class="auth-form__error-message" id="error-email-login">
+          Invalid email address
+        </span>
+      <span class="auth-form__subtitle">Password</span>
+      <input class="auth-form__input" type="password" placeholder="Enter password" required>
+      <span class="auth-form__error-message auth-form__error-message_hide" id="error-password-login">
+         Field can not be empty
+        </span>
+      <span class="auth-form__error-message auth-form__error-message_usr-exists" id="error-not-logged">
+          Invalid email address or password
+        </span>
+      <button class="button auth-form__button" name="login-button" type="submit" disabled>Sign in</button>
+      <span class="auth-form__other-action">
+          or <span class="auth-form__other-action-click" id="open-signup-form">Sign up</span>
+        </span>
+    </form>
+  </section>
+
+  <section class="auth-form__wrapper_hide" id="signup-form">
+    <form class="auth-form">
+      <div class="auth-form__close" id="close-signup-form"></div>
+      <h4 class="auth-form__title">Sign up</h4>
+      <span class="auth-form__subtitle">E-mail</span>
+      <input class="auth-form__input" name="email" placeholder="Enter email" type="email" required>
+      <span class="auth-form__error-message auth-form__error-message_hide" id="error-email"> Invalid email address</span>
+      <span class="auth-form__subtitle">Password</span>
+      <input class="auth-form__input" type="password" placeholder="Enter password" minlength="8"
+             required>
+      <span class="auth-form__error-message" id="error-password">
+        Password must be 8 or more characters long
+        </span>
+      <span class="auth-form__subtitle">Name</span>
+      <input class="auth-form__input" placeholder="Enter name" required minlength="2">
+      <span class="auth-form__error-message auth-form__error-message_hide" id="error-name">
+          Enter the name
+        </span>
+      <span class="auth-form__error-message auth-form__error-message_usr-exists" id="error-register">
+         This email is not available
+        </span>
+      <button class="button auth-form__button" type="submit">Sign up</button>
+      <span class="auth-form__other-action">
+          or <span class="auth-form__other-action-click" id="open-login-form">Sign in</span>
+        </span>
+    </form>
+  </section>
+
+  <section class="auth-form__wrapper_hide" id="signup-ok">
+    <form class="auth-form">
+      <div class="auth-form__close" id="close-signup-ok-form"></div>
+      <h4 class="auth-form__title">Registration successfully completed!</h4>
+      <span class="auth-form__other-action auth-form__other-action_left">
+          <span class="auth-form__other-action-click" id="open-login-modal">Sign in</span>
+        </span>
+    </form>
+  </section>
+
+  <div class="overlay"></div>
+</div>
+<script src="<%= htmlWebpackPlugin.files.chunks.main.entry %>"></script>
+</body>
+
+</html>
+
+<!--
+My overall impression of the project is rather positive. Code is valid, clean and nicely formatted.
+
+Markup is almost semantically correct, but there is a room for improvement. e.g. Using <nav> HTML element for navigation, adding some <article> elements, replacing <div>'s with inner line break tags with <p>.
+
+There are few minor issues with block model and content overflowing, that prevent page from displaying correctly
+on mobile devices. (see above)
+
+In terms of BEM methodology, not all classes are named properly and combined css selectors are widely used,
+which is allowed, but not encouraged. Unfortunately, the file structure of the project doesn't follow BEM guidelines.
+e.g. - 'main' folder contains subfolders of blocks which aren't its elements;
+     - Separate 'image' folder;
+     - Folders for blocks not used in this particular project;
+
+Food for thought:
+ - https://www.w3schools.com/html/html5_semantic_elements.asp
+ - https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Box_Model
+ - https://en.bem.info/methodology/naming-convention/
+ - https://en.bem.info/methodology/css/#selectors
+ - https://en.bem.info/methodology/filestructure/
+-->
